@@ -48,7 +48,7 @@ ProjectTest1/
 <ul>
   <li><strong>.NET 9.0 SDK</strong></li>
   <li><strong>SQL Server 2022 (hoặc bất kỳ cơ sở dữ liệu nào hỗ trợ EF Core)</strong></li>
-  <li><<strong>Visual Studio 2022 hoặc bất kỳ IDE nào hỗ trợ .NET</strong></li>
+  <li><strong>Visual Studio 2022 hoặc bất kỳ IDE nào hỗ trợ .NET</strong></li>
 </ul>
     
 ## Các bước cài đặt
