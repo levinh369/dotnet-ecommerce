@@ -1,0 +1,32 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Quản lý bình luận";
+}
+
+<div class="container mt-4">
+    <h4>Quản lý bình luận sản phẩm</h4>
+    <hr />
+
+    <form id="filterForm" class="row g-3 mb-3">
+        <div class="col-md-4">
+            <input type="text" class="form-control" name="keyword" placeholder="Tìm theo tên hoặc nội dung..." />
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" name="status">
+                <option value="">Tất cả</option>
+                <option value="visible">Hiển thị</option>
+                <option value="hidden">Đã ẩn</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Lọc</button>
+        </div>
+    </form>
+
+    <div id="commentList" class="mt-3 text-center">
+        <p class="text-muted">Đang tải dữ liệu...</p>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/js/AdminReview.js"></script>
+}

@@ -1,0 +1,54 @@
+﻿@model ProjectTest1.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card p-4 shadow" style="max-width: 500px; width: 100%; border-radius: 20px;">
+        <h3 class="text-center fw-bold text-dark mb-1">Login</h3>
+        <p class="text-center text-muted mb-4">Welcome back! Please enter your details</p>
+
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+            <!-- Email -->
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label fw-semibold">Email</label>
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter your email" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <div class="d-flex justify-content-between">
+                    <label asp-for="Password" class="form-label fw-semibold">Password</label>
+                    <a href="/Account/ForgotPassword" class="text-decoration-none text-danger small fw-semibold">Forgot password?</a>
+                </div>
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter your password" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small" })
+            </div>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger text-center mb-3" })
+
+            <!-- Submit -->
+            <button type="submit" class="btn w-100 mb-3 text-white fw-semibold" style="background-color: #880E4F;">
+                Sign in
+            </button>
+
+            <!-- Google Sign In -->
+            <button type="button" class="btn btn-outline-secondary w-100 mb-4 fw-semibold">
+                <i class="bi bi-google me-2"></i> Sign in with Google
+            </button>
+
+            <!-- Sign up -->
+            <p class="text-center text-muted">
+                Don't have an account?
+                <a href="/register" class="fw-semibold text-danger text-decoration-none">Sign up for free</a>
+            </p>
+        }
+    </div>
+</div>
+<script>
+    localStorage.removeItem("avatarUrl");
+</script>

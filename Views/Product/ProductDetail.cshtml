@@ -1,0 +1,129 @@
+﻿@{
+    Layout = "_Layout";
+}
+<div class="container py-4">
+    <div class="row g-4">
+        <!-- LEFT: gallery -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <img id="main-img" src="@Model.Img" alt="@Model.Name" class="card-img-top" />
+            </div>
+            <div class="d-flex flex-wrap gap-2" id="thumbs">
+                @foreach (var img in Model.SubImages)
+                {
+                    <div class="border rounded overflow-hidden" style="width:80px; height:80px; cursor:pointer" data-src="@img">
+                        <img src="@img" class="img-fluid h-100 w-100 object-fit-cover" />
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- RIGHT: info -->
+        <div class="col-md-6">
+            <h1 class="h3 fw-bold">@Model.Name</h1>
+            <div class="h4 text-danger fw-bold mb-3">
+                @Model.Price.ToString("N0") ₫
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Chọn size</label>
+                <select class="form-select w-auto" onchange="product.getQuantity(@Model.Id)" id="selectSize">
+                    @foreach (var size in Model.Sizes)
+                    {
+                        <option value="@size.SizeId">@size.SizeName</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Chọn màu</label>
+                <div id="swatches" data-id="@Model.Id">
+                    @foreach (var color in Model.Colors)
+                    {
+                        <label class="color-swatch rounded-circle border"
+                               style="width:36px; height:36px; background:@color.ColorCode; cursor:pointer">
+                            <input type="radio" name="productColor" value="@color.ColorId" class="d-none" />
+                        </label>
+                    }
+                </div>
+
+
+
+            </div>
+
+            <div class="d-flex flex-column gap-3">
+                <!-- Số lượng -->
+                <div class="d-flex align-items-center gap-2">
+                    <label class="form-label fw-semibold mb-0">Số lượng</label>
+                    <input type="number" id="quantityInput" class="form-control w-auto" value="1" min="1" max="@Model.Quantity" />
+                    <span id="spanQuantity" class="form-label fw-semibold mb-0">@Model.Quantity có sẵn</span>
+                </div>
+
+                <!-- 2 nút dưới -->
+                <div class="d-flex gap-2">
+                    <!-- Form thêm vào giỏ -->
+                    <form id="cartForm" class="flex-fill">
+                        <input type="hidden" name="ProductVariantId" required />
+                        <input type="hidden" name="Quantity" required />
+                        <button type="submit" class="btn btn-dark w-100 fw-semibold rounded-3">
+                            <i class="bi bi-cart-plus me-1"></i> Thêm vào giỏ
+                        </button>
+                    </form>
+
+                    <!-- Form mua ngay -->
+                    <form method="post" action="/Checkout/BuyNow" class="flex-fill">
+                        <input type="hidden" name="ProductVariantId" value="@Model.SelectedVariantId" />
+                        <input type="hidden" name="Quantity" />
+                        <button type="submit" class="btn btn-danger w-100 fw-semibold rounded-3 shadow-sm">
+                            <i class="bi bi-lightning-charge me-1"></i> Mua ngay
+                        </button>
+                    </form>
+
+                </div>
+                <button type="button" class="btn btn-danger w-100 fw-semibold rounded-3 shadow-sm"
+                        onclick="chat.openChat('@User.FindFirst("UserId")?.Value', @Model.Id)">
+                    <i class="bi bi-lightning-charge me-1"></i> Chat ngay
+                </button>
+
+
+
+            </div>
+
+
+            <div class="mt-4">
+                <h5 class="fw-semibold">Mô tả sản phẩm</h5>
+                <p class="text-muted">@Model.Description</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="product-data"
+     data-variant-id="@Model.ProductVariantId"
+     data-order-detail-id="@ViewBag.OrderDetailId">
+</div>
+@await Html.PartialAsync(
+    "~/Views/Product/CommentProduct.cshtml"
+)
+
+
+
+@section Scripts {
+
+    <script src="~/js/Review.js"></script>
+    <script src="/js/Product.js"></script>
+}
+<script>
+        // thumbnail click
+        document.querySelectorAll('#thumbs div').forEach(el => {
+            el.addEventListener('click', () => {
+                document.getElementById('main-img').src = el.dataset.src;
+                document.querySelectorAll('#thumbs div').forEach(x => x.classList.remove('border-primary'));
+                el.classList.add('border-primary');
+            });
+        });
+            
+
+</script>
+
+
+

@@ -1,0 +1,92 @@
+﻿@model ProjectTest1.ViewModels.ProductVariantViewModel
+@{
+    Layout = null;   // ❗ Rất quan trọng
+}   
+<div class="modal fade clean-modal" id="editVariantModal" tabindex="-1" aria-labelledby="editModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content clean-modal-content">
+            <div class="modal-header clean-modal-header">
+                <h5 class="modal-title" id="editModalTitle">
+                    <i class="fas fa-edit me-2"></i>Sửa biến thể
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <form id="editVariantForm" >
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editId" name="ProductVariantId" value="@Model.ProductVariantId" />
+                    <div class="row">
+                        <!-- Màu (readonly) -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label clean-label">Màu</label>
+                            <div class="input-group clean-input-group">
+                                <span class="input-group-text clean-icon">
+                                    <i class="fas fa-palette"></i>
+                                </span>
+                                <input type="text" class="form-control clean-input" id="editColor" readonly  value="@Model.ColorName"/>
+                            </div>
+                        </div>
+
+                        <!-- Size (readonly) -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label clean-label">Size</label>
+                            <div class="input-group clean-input-group">
+                                <span class="input-group-text clean-icon">
+                                    <i class="fas fa-ruler-combined"></i>
+                                </span>
+                                <input type="text" class="form-control clean-input" id="editSize" readonly value="@Model.SizeName" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Giá -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label clean-label">Giá (VND)</label>
+                            <div class="input-group clean-input-group">
+                                <span class="input-group-text clean-icon">
+                                    <i class="fas fa-tag"></i>
+                                </span>
+                                <input type="number" class="form-control clean-input" id="editPrice" name="Price" min="0" value="@Model.Price" required />
+                            </div>
+                        </div>
+
+                        <!-- Tồn kho -->
+                        <div class="row">
+                            <!-- Tồn kho hiện tại (readonly) -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label clean-label">Tồn kho hiện tại</label>
+                                <div class="input-group clean-input-group">
+                                    <span class="input-group-text clean-icon">
+                                        <i class="fas fa-box"></i>
+                                    </span>
+                                    <input type="number" class="form-control clean-input" id="editStockCurrent" readonly value="@Model.StockQuantity" />
+                                </div>
+                            </div>
+
+                            <!-- Thay đổi tồn kho -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label clean-label">Thay đổi tồn kho (+ thêm / - giảm)</label>
+                                <div class="input-group clean-input-group">
+                                    <span class="input-group-text clean-icon">
+                                        <i class="fas fa-plus-minus"></i>
+                                    </span>
+                                    <input type="number" class="form-control clean-input" id="editStockChange" name="StockQuantity" value="0" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer clean-modal-footer">
+                <button type="button" class="btn clean-btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Hủy
+                </button>
+                <button type="button" onclick="productVariant.EditPost()">Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
+</div>

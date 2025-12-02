@@ -1,0 +1,71 @@
+﻿@model ProjectTest1.ViewModels.ProductVariantPageViewModel
+@{
+    ViewData["Title"] = "Quản lý biến thể";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="product-container mt-4" data-product-id="@Model.ProductId">
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card clean-card">
+                <div class="card-header clean-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-tshirt me-2"></i>
+                        Quản lý biến thể: @Model.ProductName
+                    </h4>
+                </div>
+
+                <div class="card-body">
+                    <!-- Filter + nút thêm -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <label class="form-label clean-label">Lọc màu</label>
+                            <select class="form-select clean-select" id="filterColor">
+                                <option value="">Tất cả</option>
+                                @foreach (var color in Model.Colors)
+                                {
+                                    <option value="@color">@color.ColorName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label clean-label">Lọc size</label>
+                            <select class="form-select clean-select" id="filterSize">
+                                <option value="">Tất cả</option>
+                                @foreach (var size in Model.Sizes)
+                                {
+                                    <option value="@size">@size.SizeName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button class="btn clean-btn me-2" onclick="applyFilter()">
+                                <i class="fas fa-filter"></i> Áp dụng
+                            </button>
+                        </div>
+
+                        <div class="col-md-3 d-flex align-items-end justify-content-end">
+                            <button class="btn clean-btn-add" onclick="productVariant.openCreateModal(@Model.ProductId)">
+                                <i class="fas fa-plus"></i> Thêm mới
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ✅ Bảng dữ liệu để bên ngoài row -->
+                    <div class="table-responsive shadow-sm border rounded" id="gridDataVariant">
+                        <!-- Dữ liệu sẽ được load bằng Ajax -->
+                    </div>
+                    <div id="modal-placeholder-variant"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/js/ProductVariant.js"></script>
+}
+
+

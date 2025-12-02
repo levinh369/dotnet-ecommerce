@@ -1,0 +1,275 @@
+﻿@model ProjectTest1.ViewModels.OrderViewModel
+@using ProjectTest1.Enums
+@section Scripts {
+    <script src="~/js/UserVoucher.js"></script>
+}
+<form asp-action="CreatePayment" asp-controller="Payment" method="post" id="checkoutForm" class="p-4 border rounded shadow-sm bg-light">
+    <h5 class="mb-4 fw-bold">🛒 Thông tin thanh toán</h5>
+    <div class="mb-3">
+        <label for="ReceiverName" class="form-label fw-semibold">Người nhận hàng</label>
+        <input type="text"
+               class="form-control rounded-pill"
+               id="ReceiverName"
+               name="ReceiverName"
+               value="@Model.userName"
+               required
+               placeholder="Nhập họ và tên người nhận" />
+    </div>
+    <!-- Thông tin liên hệ -->
+    <div class="mb-3">
+        <label for="Phone" class="form-label fw-semibold">Số điện thoại</label>
+        <input type="tel" class="form-control rounded-pill" id="Phone" value="@Model.Phone" name="Phone" required pattern="[0-9]{9,11}" placeholder="Nhập số điện thoại" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Email" class="form-label fw-semibold">Email</label>
+        <input type="email" class="form-control rounded-pill" id="Email" value="@Model.Email" name="Email" required placeholder="example@gmail.com" />
+    </div>
+
+    <!-- Địa chỉ giao hàng -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Tỉnh/Thành phố</label>
+            <select class="form-select rounded-pill shadow-sm" name="shippingProvince" id="shippingProvince" required>
+                <option disabled selected value="">Chọn Tỉnh/Thành phố</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Quận/Huyện</label>
+            <select class="form-select rounded-pill shadow-sm" name="shippingDistrict" id="shippingDistrict" required>
+                <option disabled selected value="">Chọn Quận/Huyện</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Phường/Xã</label>
+            <select class="form-select rounded-pill shadow-sm" name="shippingWard" id="shippingWard" required>
+                <option disabled selected value="">Chọn Phường/Xã</option>
+            </select>
+        </div>
+    </div>
+
+    <input type="hidden" name="shippingProvinceName" id="shippingProvinceName" />
+    <input type="hidden" name="shippingDistrictName" id="shippingDistrictName" />
+    <input type="hidden" name="shippingWardName" id="shippingWardName" />
+
+    <div class="mb-3">
+        <label for="Address" class="form-label fw-semibold">Địa chỉ cụ thể</label>
+        <textarea class="form-control rounded"
+                  id="Address"
+                  name="Address"
+                  rows="2"
+                  required
+                  placeholder="Nhập địa chỉ cụ thể">@Model.Address</textarea>
+    </div>
+
+
+    <!-- Phương thức thanh toán -->
+    <div class="mb-3">
+        <h6 class="fw-semibold">Phương thức thanh toán</h6>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="paymentMethod" id="paymentCOD" value="COD" checked>
+            <label class="form-check-label" for="paymentCOD">Thanh toán khi nhận hàng (COD)</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="paymentMethod" id="paymentVNPAY" value="VNPAY">
+            <label class="form-check-label" for="paymentVNPAY">Thanh toán qua VNPay</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="paymentMethod" id="paymentMOMO" value="MOMO">
+            <label class="form-check-label" for="paymentMOMO">Thanh toán qua MoMo</label>
+        </div>
+    </div>
+
+    <!-- Chọn voucher -->
+    <div class="mb-3 d-flex align-items-center gap-2">
+        <div class="mb-3 d-flex align-items-center gap-2">
+            <label for="SelectedVoucherId" class="form-label fw-semibold mb-0" style="white-space: nowrap;">
+                🎟️ Chọn Voucher
+            </label>
+
+            <select class="form-select rounded-pill shadow-sm flex-grow-1"
+                    id="SelectedVoucherId"
+                    name="SelectedVoucherId"
+                    style="max-width: 450px; padding: 0.5rem 1rem;">
+
+                <option value="">Không dùng voucher</option>
+
+                @foreach (var voucher in Model.Vouchers)
+                {
+                    bool isMaxUsed = voucher.UserClaimedCount >= voucher.UsageLimit;
+                    bool notEnoughOrderValue = Model.Amount < (voucher.MinOrderValue);
+                    bool isDisabled = isMaxUsed || notEnoughOrderValue;
+
+                    string discountText = voucher.DiscountType == DiscountType.Percent
+                    ? $"{voucher.DiscountValue}%"
+                    : $"{voucher.DiscountValue:N0}₫";
+
+                    string claimedText = $"x{voucher.UserClaimedCount}";
+
+                    string conditionText = "";
+                    if (isMaxUsed)
+                    {
+                        conditionText = " - 🔒 Đã hết lượt";
+                    }
+                    else if (notEnoughOrderValue)
+                    {
+                        conditionText = $" - ⚠️ Cần đơn ≥ {voucher.MinOrderValue:N0}₫";
+                    }
+
+                    <option value="@voucher.Id"
+                            disabled="@(isDisabled ? "disabled" : null)">
+                        🎁 @voucher.Name (@voucher.Code) - Giảm @discountText @claimedText @conditionText
+                    </option>
+                }
+            </select>
+        </div>
+
+    </div>
+    <!-- Tổng giá gốc -->
+    <!-- Tổng giá gốc -->
+    <div class="mb-2 d-flex justify-content-end align-items-center">
+        <span class="fw-semibold fs-6 me-2">Tổng tiền:</span>
+        <span id="totalPriceDisplay" class="fs-5 fw-bold text-danger text-end">
+            @( (Model.Amount ?? 0).ToString("N0") )₫
+        </span>
+        <input type="hidden" name="Amount" id="originalTotalPrice" value="@Model.Amount" />
+    </div>
+
+    <!-- Giá giảm voucher -->
+    <!-- Giá giảm voucher -->
+    <div id="discountAmountDiv" class="mb-2 d-flex justify-content-end align-items-center d-none" >
+        <span class="fw-semibold fs-6 me-2">Giảm giá:</span>
+        <span id="discountAmountDisplay" class="fs-5 fw-bold text-warning text-end">0₫</span>
+    </div>
+    <input type="hidden" name="DiscountValue" id="DiscountValue" value="0" />
+    <!-- Giá cuối sau giảm -->
+    <div id="finalPriceDiv" class="mb-2 d-flex justify-content-end align-items-center d-none">
+        <span class="fw-semibold fs-6 me-2">Giá cuối:</span>
+        <span id="finalPriceDisplay" class="fs-5 fw-bold text-success text-end">0₫</span>
+    </div>
+    <input type="hidden" name="FinalAmount" id="FinalAmount" value="0" />
+    <input type="hidden" name="VoucherId" id="VoucherId" value="" />
+    <input type="hidden" name="OrderDescription" value="Thanh toán đơn hàng quần áo" />
+
+    <button type="submit" class="btn btn-dark w-100 rounded-pill shadow-sm fw-bold">
+        <i class="bi bi-credit-card me-2"></i> Thanh toán
+    </button>
+</form>
+
+<style>
+    /* Option tooltip hover */
+    #SelectedVoucherId option[title]:hover::after {
+        content: attr(title);
+        position: absolute;
+        left: 105%;
+        top: 0;
+        background: rgba(0,0,0,0.8);
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
+        z-index: 1000;
+    }
+</style>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let provinces = [];
+    let districts = [];
+    let wards = [];
+
+    const selectedProvinceId = '@Model.ProvinceId';
+    const selectedDistrictId = '@Model.DistrictId';
+    const selectedWardId = '@Model.WardId';
+
+    async function loadProvinces() {
+        const response = await fetch('/Custom/province-api.json');
+        if (!response.ok) throw new Error('Không thể tải dữ liệu tỉnh/thành phố');
+        provinces = await response.json();
+
+        const provinceSelect = document.getElementById('shippingProvince');
+        provinceSelect.innerHTML = '<option value="">Chọn Tỉnh/Thành phố</option>';
+
+        provinces.forEach(province => {
+            const option = document.createElement('option');
+            option.value = province.code;
+            option.textContent = province.name;
+            if (province.code == selectedProvinceId) option.selected = true;
+            provinceSelect.appendChild(option);
+        });
+
+        if (selectedProvinceId) {
+            document.getElementById('shippingProvinceName').value =
+                provinceSelect.selectedOptions[0].text;
+            await loadDistricts(selectedProvinceId);
+        }
+    }
+
+    async function loadDistricts(provinceCode) {
+        const province = provinces.find(p => p.code == provinceCode);
+        if (!province) return;
+        districts = province.districts;
+
+        const districtSelect = document.getElementById('shippingDistrict');
+        districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+
+        districts.forEach(district => {
+            const option = document.createElement('option');
+            option.value = district.code;
+            option.textContent = district.name;
+            if (district.code == selectedDistrictId) option.selected = true;
+            districtSelect.appendChild(option);
+        });
+
+        if (selectedDistrictId) {
+            document.getElementById('shippingDistrictName').value =
+                districtSelect.selectedOptions[0].text;
+            await loadWards(selectedDistrictId);
+        }
+    }
+
+    async function loadWards(districtCode) {
+        const district = districts.find(d => d.code == districtCode);
+        if (!district) return;
+        wards = district.wards;
+
+        const wardSelect = document.getElementById('shippingWard');
+        wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+
+        wards.forEach(ward => {
+            const option = document.createElement('option');
+            option.value = ward.code;
+            option.textContent = ward.name;
+            if (ward.code == selectedWardId) option.selected = true;
+            wardSelect.appendChild(option);
+        });
+
+        if (selectedWardId) {
+            document.getElementById('shippingWardName').value =
+                wardSelect.selectedOptions[0].text;
+        }
+    }
+
+    // Khi người dùng chọn thay đổi
+    document.addEventListener("DOMContentLoaded", async function () {
+        await loadProvinces();
+
+        document.getElementById('shippingProvince').addEventListener("change", async function () {
+            document.getElementById('shippingProvinceName').value =
+                this.selectedOptions[0]?.text || "";
+            await loadDistricts(this.value);
+        });
+
+        document.getElementById('shippingDistrict').addEventListener("change", async function () {
+            document.getElementById('shippingDistrictName').value =
+                this.selectedOptions[0]?.text || "";
+            await loadWards(this.value);
+        });
+
+        document.getElementById('shippingWard').addEventListener("change", function () {
+            document.getElementById('shippingWardName').value =
+                this.selectedOptions[0]?.text || "";
+        });
+    });
+</script>

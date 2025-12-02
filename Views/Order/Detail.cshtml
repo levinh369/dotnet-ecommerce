@@ -1,0 +1,94 @@
+﻿@model ProjectTest1.ViewModels.OrderDetailViewModel
+<!-- Modal xem chi tiết đơn hàng -->
+<div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+
+            <!-- Header -->
+            <div class="modal-header bg-gradient text-white" style="background: linear-gradient(45deg, #0d6efd, #0dcaf0);">
+                <h5 class="modal-title fw-bold" id="orderDetailLabel">
+                    <i class="bi bi-receipt-cutoff me-2"></i> Chi tiết đơn hàng
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body p-4">
+
+                <!-- Thông tin chung -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>👤 Khách hàng:</strong> @Model.UserName</p>
+                        <p class="mb-1"><strong>📞 Số điện thoại:</strong> @Model.Phone</p>
+                        <p class="mb-1"><strong>📧 Email:</strong> @Model.Email</p>
+                        <p class="mb-1"><strong>📅 Ngày mua:</strong> @Model.CreatedAt</p>
+                        <p class="mb-1"><strong>🔄 Cập nhật:</strong> @Model.UpdatedAt</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>🚚 Ngày giao:</strong> @Model.ShipDate</p>
+                        <p class="mb-1"><strong>📍 Địa chỉ:</strong> @Model.Address</p>
+                        <p class="mb-1"><strong>💳 Hình thức thanh toán:</strong> @Model.PaymentMethod</p>
+                    </div>
+                </div>
+
+                <!-- Danh sách sản phẩm -->
+                <h6 class="fw-bold border-bottom pb-2 mb-3">🛒 Sản phẩm</h6>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Tên sản phẩm</th>
+                                <th>Ảnh sản phẩm</th>
+                                <th>Phân loại</th>
+                                <th>Mô tả</th>
+                                <th class="text-center">Số lượng</th>
+                                <th class="text-end">Đơn giá</th>
+                                <th class="text-end">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orderItems">
+                            @foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>@item.ProductName</td>
+                                    <td>
+                                        <img src="@item.image" alt="Ảnh sản phẩm" style="width:80px; height:auto; border-radius:8px;" />
+                                    </td>
+                                    <td>@item.Size / @item.Color</td>
+                                    <td>@item.Description</td>
+                                    <td class="text-center">@item.Quantity</td>
+                                    <td class="text-end">@($"{item.UnitPrice:N0} VND")</td>
+                                    <td class="text-end">@((item.TotalPrice ?? 0).ToString("N0")) VND</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tổng giá -->
+                <div class="border-top mt-4 pt-3">
+                    <div class="d-flex justify-content-end flex-column align-items-end">
+                        <p class="mb-1"><strong>Tổng giá:</strong> @((Model.TotalAmount ?? 0).ToString("N0")) đ</p>
+                        <p class="mb-1 text-danger"><strong>Giảm giá:</strong> -@((Model.DiscountValue ?? 0).ToString("N0")) đ</p>
+                        <h5 class="fw-bold text-success mt-2">
+                            Giá cuối: @(((Model.TotalAmount ?? 0) - (Model.DiscountValue ?? 0)).ToString("N0")) đ
+                        </h5>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer d-flex justify-content-between">
+                <span class="fw-semibold">
+                    Trạng thái:
+                    <span class="badge bg-secondary">@Model.Status</span>
+                </span>
+
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

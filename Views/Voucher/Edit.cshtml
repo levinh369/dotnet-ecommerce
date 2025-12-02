@@ -1,0 +1,118 @@
+﻿@using ProjectTest1.Enums
+@model ProjectTest1.ViewModels.VoucherViewModel
+@{
+    Layout = null;
+}
+
+<!-- Modal chỉnh sửa Voucher -->
+<div class="modal fade" id="voucherEditModal" tabindex="-1" aria-labelledby="voucherEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+
+            <!-- 🟦 Header -->
+            <div class="modal-header bg-primary text-white rounded-top-4">
+                <h5 class="modal-title fw-bold" id="voucherEditModalLabel">✏️ Chỉnh sửa Voucher</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- 🧾 Body -->
+            <form id="voucherEditForm">
+                @Html.AntiForgeryToken()
+                <div class="modal-body p-4 bg-light-subtle">
+                    <div class="row g-3">
+                        <input type="hidden" name="Id" value="@Model.Id" />
+
+                        <!-- Mã voucher -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-primary">Mã Voucher</label>
+                            <input type="text" class="form-control border-primary-subtle" name="Code" value="@Model.Code" readonly />
+                        </div>
+
+                        <!-- Tên -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-primary">Tên Voucher</label>
+                            <input type="text" class="form-control border-primary-subtle" name="Name" value="@Model.Name" required />
+                        </div>
+
+                        <!-- Mô tả -->
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold text-primary">Mô tả</label>
+                            <textarea class="form-control border-primary-subtle" name="Description" rows="2">@Model.Description</textarea>
+                        </div>
+
+                        <!-- Kiểu giảm giá -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-primary">Kiểu giảm giá</label>
+                            <select class="form-select border-primary-subtle" name="DiscountType">
+                                @foreach (var type in Enum.GetValues(typeof(DiscountType)).Cast<DiscountType>())
+                                {
+                                    var selected = Model.DiscountType == type ? "selected" : "";
+                                    <option value="@((int)type)" selected="@selected">@type</option>
+                                }
+
+                            </select>
+                        </div>
+
+                        <!-- Giá trị giảm -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-primary">Giá trị giảm</label>
+                            <input type="number" class="form-control border-primary-subtle" name="DiscountValue" value="@Model.DiscountValue" required />
+                        </div>
+
+                        <!-- Đơn tối thiểu -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-primary">Đơn tối thiểu</label>
+                            <input type="number" class="form-control border-primary-subtle" name="MinOrderValue" value="@Model.MinOrderValue" />
+                        </div>
+
+                        <!-- Giới hạn tổng -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-primary">Số lượng Voucher</label>
+                            <input type="number" class="form-control border-primary-subtle" name="UsageLimit" value="@Model.UsageLimit" />
+                        </div>
+
+                        <!-- Giới hạn mỗi user -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-primary">Giới hạn / Người dùng</label>
+                            <input type="number" class="form-control border-primary-subtle" name="MaxPerUser" value="@Model.MaxPerUser" />
+                        </div>
+
+                        <!-- Trạng thái -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-primary">Trạng thái</label>
+                            <select class="form-select border-primary-subtle" name="Status">
+                                @foreach (var status in Enum.GetValues(typeof(VoucherStatus)).Cast<VoucherStatus>())
+                                {
+                                    <option value="@((int)status)" selected="@(Model.Status == status ? "selected" : null)">@status</option>
+                                }
+
+                            </select>
+                        </div>
+
+                        <!-- Ngày bắt đầu -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-primary">Ngày bắt đầu</label>
+                            <input type="date" class="form-control border-primary-subtle"
+                                   name="StartDate"
+                                   value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+                        </div>
+
+                        <!-- Ngày kết thúc -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-primary">Ngày kết thúc</label>
+                            <input type="date" class="form-control border-primary-subtle"
+                                   name="EndDate"
+                                   value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🧩 Footer -->
+                <div class="modal-footer border-0 bg-light-subtle rounded-bottom-4">
+                    <button type="button" class="btn btn-secondary px-4 fw-bold" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" onclick="voucher.EditPost()">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
