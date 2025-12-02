@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Giỏ Hàng";
+}
+<div class="body">
+    <div class="d-flex justify-content-end mb-3">
+        <input type="text" id="search-box" class="form-control w-25" placeholder="Tìm kiếm sản phẩm...">
+        <button type="button" id="btn-search" class="btn btn-primary ms-2">Tìm</button>
+    </div>
+
+
+    <div class="table-responsive" id="gridData">
+        <!-- Ajax sẽ load _ListData.cshtml vào đây -->
+    </div>
+    <div id="modal-placeholder"></div>
+</div>
+@section Scripts {
+    <script src="~/js/Cart.js"></script>
+   
+}

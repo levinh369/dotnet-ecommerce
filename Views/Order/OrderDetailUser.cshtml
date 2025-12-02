@@ -1,0 +1,162 @@
+﻿@model ProjectTest1.ViewModels.OrderViewModel
+
+@{
+    ViewData["Title"] = $"Chi tiết đơn hàng #{Model.OrderId}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-4">
+
+    <h2 class="mb-4 text-primary">Chi tiết đơn hàng #@Model.OrderId</h2>
+
+    <!-- Thông tin khách hàng -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <i class="bi bi-person-circle me-2"></i> Thông tin khách hàng
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <strong>Họ tên:</strong> @Model.userName
+                </div>
+                <div class="col-md-6 mb-2">
+                    <strong>Email:</strong> @Model.Email
+                </div>
+                <div class="col-md-12 mb-2">
+                    <strong>Địa chỉ:</strong> @Model.Address
+                </div>
+                <div class="col-md-12 mb-2">
+                    <strong>Số điện thoại:</strong> @Model.Phone
+                </div>
+                <div class="col-md-6 mb-2">
+                    <strong>Ngày đặt:</strong> @Model.CreatedAt?.ToString("dd/MM/yyyy HH:mm")
+                </div>
+                <div class="col-md-6 mb-2">
+                    <strong>Trạng thái:</strong>
+                    <span class="badge bg-info text-dark">Đơn hàng của bạn đã được @Model.StatusName</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Danh sách sản phẩm -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-success text-white">
+            <i class="bi bi-box-seam me-2"></i> Danh sách sản phẩm
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Ảnh</th>
+                            <th>Phân loại</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Thành tiền</th>
+                            <th>Đánh giá</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>
+                                    @item.ProductName                                
+                                </td>
+                                <td>
+                                    <img src="@item.image" class="img-thumbnail" width="60" height="60" />
+                                </td>
+                                <td>@item.Color / @item.Size</td>
+                                <td>@item.Quantity</td>
+                                <td>@((item.UnitPrice ?? 0).ToString("N0")) đ</td>
+                                <td>@((item.Quantity * (item.UnitPrice ?? 0)).ToString("N0")) đ</td>
+
+                                <td>
+                                    @if (Model.StatusName.ToLower() == "delivered" && !item.HasReview)
+                                    {
+                                        <a class="btn btn-sm btn-outline-primary"
+                                           href="/Product/ProductDetail/@item.ProductId?orderDetailId=@item.OrderDetailId#commentForm">
+                                            Đánh giá
+                                        </a>
+
+                                    }
+                                    else if (item.HasReview)
+                                    {
+                                        <span class="text-success">✅ Đã đánh giá</span>
+                                    }
+                                </td>
+
+
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="p-3 bg-light rounded-3 shadow-sm d-flex justify-content-between align-items-center">
+                <!-- Thông tin thanh toán -->
+                <div>
+                    <p class="mb-1">
+                        @{
+                            var finalToShow = (Model.FinalAmount != null && Model.FinalAmount > 0)
+                            ? Model.FinalAmount
+                            : Model.Amount;
+                        }
+                        Vui lòng thanh toán <span class="fw-bold text-danger">
+                            @finalToShow?.ToString("N0") đ
+                        </span> khi nhận hàng.
+                    </p>
+
+                    <p class="mb-0">
+                        <strong>Phương thức thanh toán:</strong> @Model.PaymentMethod
+                    </p>
+                </div>
+
+                <!-- Tổng tiền chi tiết -->
+                <div class="text-end">
+                    @if (Model.FinalAmount != null && Model.FinalAmount > 0 && Model.FinalAmount < Model.Amount)
+                    {
+                        <!-- Có giảm giá -->
+                        <div>
+                            <span class="text-muted">Tổng gốc:</span>
+                            <span class="text-decoration-line-through text-muted">
+                                @Model.Amount?.ToString("N0") đ
+                            </span>
+                        </div>
+                        <div>
+                            <span class="text-success fw-semibold">Giảm giá:</span>
+                            <span>-@((Model.Amount - Model.FinalAmount)?.ToString("N0")) đ</span>
+                        </div>
+                        <div>
+                            <h5 class="mb-0 text-danger fw-bold">
+                                Còn lại: @Model.FinalAmount.ToString("N0") đ
+                            </h5>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Không có giảm giá hoặc FinalAmount = 0 -->
+                        <div>
+                            <h5 class="mb-0 text-danger fw-bold">
+                                Tổng tiền: @Model.Amount?.ToString("N0") đ
+                            </h5>
+                        </div>
+                    }
+                </div>
+
+
+
+
+        </div>
+    </div>
+
+    <!-- Thao tác -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left-circle me-1"></i> Quay lại danh sách
+        </a>
+    </div>
+
+</div>

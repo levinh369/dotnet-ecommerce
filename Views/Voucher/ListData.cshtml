@@ -1,0 +1,113 @@
+﻿@using ProjectTest1.Enums
+@model List<ProjectTest1.ViewModels.VoucherViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý Voucher";
+}
+
+<div class="container mt-4">
+    <div class="row g-4">
+        @foreach (var v in Model)
+        {
+            var discountDisplay = v.DiscountType == DiscountType.Percent
+            ? $"{v.DiscountValue}%"
+            : $"{v.DiscountValue:N0} ₫";
+            var minOrderDisplay = $"{v.MinOrderValue:N0} ₫";
+
+            var (statusText, statusClass, statusIcon) = v.Status switch
+            {
+                VoucherStatus.Draft => ("Bản nháp", "bg-info text-white", "bi-pencil-square"),
+                VoucherStatus.Active => ("Đang hoạt động", "bg-success text-white", "bi-check-circle"),
+                VoucherStatus.Inactive => ("Ngưng hoạt động", "bg-warning text-dark", "bi-pause-circle"),
+                VoucherStatus.Expired => ("Hết hạn", "bg-secondary text-white", "bi-x-circle"),
+                VoucherStatus.Exhausted => ("Hết lượt sử dụng", "bg-danger text-white", "bi-exclamation-circle"),
+                VoucherStatus.Deleted => ("Đã xóa", "bg-dark text-white", "bi-trash3"),
+                _ => ("Không xác định", "bg-light text-dark", "bi-question-circle")
+            };
+
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 rounded-4 h-100 hover-shadow transition-all">
+                    <div class="card-body p-4">
+                        <!-- Header: Code + Status -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h5 class="fw-bold text-primary mb-1">@v.Name</h5>
+                                <small class="text-muted">
+                                    <i class="bi bi-tag"></i> @v.Code
+                                </small>
+                            </div>
+                            <span class="badge rounded-pill @statusClass px-3 py-2 d-flex align-items-center">
+                                <i class="bi @statusIcon me-1"></i> @statusText
+                            </span>
+                        </div>
+
+                        <!-- Description -->
+                        <p class="text-secondary small mb-3 text-start text-truncate-2">
+                            @v.Description
+                        </p>
+
+
+
+                        <!-- Info list -->
+                        <ul class="list-unstyled small mb-4 text-start">
+                            <li><strong>💰 Giảm:</strong> @discountDisplay</li>
+                            <li><strong>🛒 Đơn tối thiểu:</strong> @minOrderDisplay</li>
+                            <li><strong>📊 Đã dùng:</strong> @v.UsedCount / @v.UsageLimit</li>
+                            <li><strong>⏰ Hiệu lực:</strong> @v.StartDate?.ToString("dd/MM/yyyy") - @v.EndDate?.ToString("dd/MM/yyyy")</li>
+                        </ul>
+
+                        <!-- Action buttons -->
+                        <div class="d-flex justify-content-end gap-2 mt-3">
+                            <button class="btn btn-sm btn-light border shadow-sm"
+                                    title="Xem chi tiết"
+                                    onclick="voucher.openDetailModal(@v.Id)">
+                                <i class="bi bi-eye text-primary"></i>
+                            </button>
+
+                            <button class="btn btn-sm btn-light border shadow-sm"
+                                    title="Chỉnh sửa"
+                                    onclick="voucher.openEditlModal(@v.Id)">
+                                <i class="bi bi-pencil-square text-warning"></i>
+                            </button>
+
+                            <button class="btn btn-sm btn-light border shadow-sm"
+                                    title="Xóa voucher"
+                                    onclick="voucher.delete(@v.Id)">
+                                <i class="bi bi-trash3 text-danger"></i>
+                            </button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div class="d-flex justify-content-between align-items-center mt-3">
+    <div>
+        Tổng số bản ghi: <strong>@ViewBag.Total</strong>
+    </div>
+    <div id="pagination" data-total-pages="@ViewBag.totalPage">
+        <ul id="paging-ul" class="pagination pagination-sm"></ul>
+    </div>
+
+</div>
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+    }
+
+    .text-truncate-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* ✅ Giới hạn 2 dòng */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal; /* Cho phép xuống dòng */
+    }
+
+
+</style>

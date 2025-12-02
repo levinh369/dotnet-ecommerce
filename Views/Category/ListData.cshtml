@@ -1,0 +1,74 @@
+﻿@model List<ProjectTest1.ViewModels.CategoryViewModel>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th class="text-center"><input type="checkbox" id="check-all" /></th>
+            <th>STT</th>
+            <th>Tên danh mục</th>
+            <th>Danh mục cha</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            int index = 1;
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-center">
+                        <input type="checkbox" class="select-checkbox" value="@item.CategoryId" />
+                    </td>
+                    <td>@index</td>
+                    <td>@item.CategoryName</td>
+                    <td>@item.ParentName</td>
+                    <td>
+                        @if (item.IsActive)
+                        {
+                            <button onclick="category.changeStatus(@item.CategoryId)" class="btn btn-success btn-sm">
+                                Kích hoạt
+                            </button>
+
+                        }
+                        else
+                        {
+                            <button onclick="category.changeStatus(@item.CategoryId)" class="btn btn-warning btn-sm">
+                                Vô hiệu
+                            </button>
+                        }
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="category.detail(@item.CategoryId)">Xem</button>
+                        <button class="btn btn-sm btn-warning" onclick="category.edit(@item.CategoryId)">Sửa</button>
+                        <button class="btn btn-sm btn-danger" onclick="category.remove(@item.CategoryId)">Xoá</button>
+                    </td>
+                </tr>
+                index++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6">Không có dữ liệu</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="d-flex justify-content-between align-items-center mt-3">
+    <div>
+        Tổng số bản ghi: <strong>@ViewBag.Total</strong>
+    </div>
+    <div id="pagination" data-total-pages="@ViewBag.totalPage">
+        <ul id="paging-ul" class="pagination pagination-sm"></ul>
+    </div>
+
+</div>
+<script>
+    document.getElementById('check-all')?.addEventListener('change', function () {
+        const isChecked = this.checked;
+        document.querySelectorAll('.select-checkbox').forEach(cb => cb.checked = isChecked);
+    });
+
+</script>

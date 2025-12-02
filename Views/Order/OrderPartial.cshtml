@@ -1,0 +1,38 @@
+﻿@model List<ProjectTest1.ViewModels.OrderViewModel>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning">⚠️ Không có đơn hàng nào.</div>
+}
+else
+{
+    @foreach (var order in Model)
+    {
+        <div class="card mt-3 shadow-sm">
+            <div class="card-header d-flex justify-content-between">
+                <div>
+                    <strong>Shop ABC</strong>
+                </div>
+                <span class="fw-bold text-danger">@order.Status</span>
+            </div>
+            @foreach (var item in order.Items)
+            {
+                <div class="card-body d-flex">
+                    <img src="@item.image" alt="@item.ProductName" width="80" height="80" class="me-3" />
+                    <div class="flex-fill">
+                        <h6>@item.ProductName</h6>
+                        <small>x @item.Quantity</small>
+                        <div class="text-muted">
+                            <del>@($"{item.UnitPrice ?? 0:N0} ₫")</del>
+
+                        </div>
+                    </div>
+                    <div class="text-end fw-bold text-danger">
+                        Thành tiền: @((item.TotalPrice ?? 0).ToString("N0")) ₫
+                    </div>
+
+                </div>
+            }
+        </div>
+    }
+}

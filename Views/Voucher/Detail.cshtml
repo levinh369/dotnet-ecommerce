@@ -1,0 +1,113 @@
+﻿@using ProjectTest1.Enums
+@model ProjectTest1.ViewModels.VoucherViewModel
+@{
+    Layout = null;
+}
+
+<!-- Modal xem chi tiết Voucher -->
+<div class="modal fade" id="voucherDetailModal" tabindex="-1" aria-labelledby="voucherDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+
+            <!-- 🟩 Header: Xanh lá cho đồng bộ -->
+            <div class="modal-header bg-success text-white rounded-top-4">
+                <h5 class="modal-title fw-bold" id="voucherDetailModalLabel">📄 Chi tiết Voucher</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- 📋 Body -->
+            <div class="modal-body p-4 bg-light-subtle">
+                <div class="row g-3">
+
+                    <!-- Mã voucher -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-success">Mã voucher</label>
+                        <input class="form-control bg-white border-success-subtle" value="@Model.Code" readonly />
+                    </div>
+
+                    <!-- Tên voucher -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-success">Tên voucher</label>
+                        <input class="form-control bg-white border-success-subtle" value="@Model.Name" readonly />
+                    </div>
+
+                    <!-- Mô tả -->
+                    <div class="col-md-12">
+                        <label class="form-label fw-semibold text-success">Mô tả</label>
+                        <textarea class="form-control bg-white border-success-subtle" rows="2" readonly>@Model.Description</textarea>
+                    </div>
+
+                    <!-- Loại voucher -->
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-success">Loại Voucher</label>
+                        <input class="form-control bg-white border-success-subtle" value="@Model.Type" readonly />
+                    </div>
+
+                    <!-- Kiểu giảm -->
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-success">Kiểu giảm giá</label>
+                        <input class="form-control bg-white border-success-subtle" value="@Model.DiscountType" readonly />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-success">Giới hạn</label>
+                        <input class="form-control bg-white border-success-subtle" value="@Model.MaxPerUser" readonly />
+                    </div>
+                    <!-- Trạng thái -->
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-success">Trạng thái</label>
+                        @{
+                            string statusText = Model.Status switch
+                            {
+                                VoucherStatus.Draft => "Bản nháp",
+                                VoucherStatus.Active => "Đang hoạt động",
+                                VoucherStatus.Inactive => "Ngưng hoạt động",
+                                VoucherStatus.Expired => "Hết hạn",
+                                VoucherStatus.Exhausted => "Đã hết lượt",
+                                VoucherStatus.Deleted => "Đã xóa",
+                                _ => "Không xác định"
+                            };
+                        }
+                        <input class="form-control bg-white border-success-subtle" value="@statusText" readonly />
+                    </div>
+
+                    <!-- Giá trị giảm -->
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-success">Giá trị giảm</label>
+                        <input class="form-control bg-white border-success-subtle" value="@String.Format("{0:N0}", Model.DiscountValue)" readonly />
+                    </div>
+
+                    <!-- Đơn tối thiểu -->
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-success">Đơn tối thiểu</label>
+                        <input class="form-control bg-white border-success-subtle" value="@String.Format("{0:N0}", Model.MinOrderValue)" readonly />
+                    </div>
+
+                    <!-- Giới hạn sử dụng -->
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-success">Số lượng voucher</label>
+                        <input class="form-control bg-white border-success-subtle" value="@Model.UsageLimit" readonly />
+                    </div>
+
+                    <!-- Ngày bắt đầu -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-success">Ngày bắt đầu</label>
+                        <input class="form-control bg-white border-success-subtle" value="@Model.StartDate?.ToString("dd/MM/yyyy")" readonly />
+                    </div>
+
+                    <!-- Ngày kết thúc -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-success">Ngày kết thúc</label>
+                        <input class="form-control bg-white border-success-subtle" value="@Model.EndDate?.ToString("dd/MM/yyyy")" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🧩 Footer -->
+            <div class="modal-footer border-0 bg-light-subtle rounded-bottom-4">
+                <button type="button" class="btn btn-secondary px-4 fw-bold" data-bs-dismiss="modal">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,151 @@
+﻿<div class="modal fade modal-right" id="orderNotificationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideout">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fs-5">
+                    <i class="bi bi-megaphone-fill text-danger me-2"></i> Thông báo
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body pt-2">
+                <ul class="list-group list-group-flush" id="notifList">
+                    <!-- Danh sách li được load bằng AJAX -->
+                </ul>
+
+                <div class="text-center mt-3 mb-2">
+                    <button id="loadMoreBtn"
+                            class="btn btn-outline-primary btn-sm rounded-pill px-3"
+                            onclick="admin.loadMore()">
+                        <i class="bi bi-chevron-down me-1"></i> Xem thêm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ===== Modal: hiện lên (no slide), rộng như ảnh, bo góc, drop shadow ===== */
+    .modal.modal-right .modal-dialog {
+        position: fixed; /* gắn modal cố định theo viewport */
+        top: 70px; /* cách top (để không che navbar, chỉnh tùy giao diện) */
+        right: 90px; /* 💡 cách mép phải 350px như bạn yêu cầu */
+        margin: 0;
+        max-width: 600px; /* chiều rộng modal */
+        width: 100%;
+        transform: none; /* không hiệu ứng trượt */
+        transition: none;
+        z-index: 1056; /* cao hơn modal backdrop */
+    }
+
+    /* Không cần animation trượt */
+    .modal.modal-right.show .modal-dialog {
+        transform: none;
+    }
+
+    /* Giữ style modal đẹp */
+    .modal.modal-right .modal-content {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Body có thể cuộn */
+    .modal.modal-right .modal-body {
+        overflow-y: auto;
+        max-height: calc(80vh);
+        padding-right: 8px;
+    }
+
+
+    /* --- Item thông báo --- */
+    .notif-btn {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        width: 100%;
+        text-align: left;
+        border: none;
+        background: none;
+        padding: 12px 14px;
+        transition: background-color 0.12s;
+        position: relative;
+    }
+
+        .notif-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+    /* info (avatar + text) chiếm hết không gian - dot sẽ nằm ngoài phần này */
+    .notif-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1 1 auto; /* chiếm không gian chính */
+        min-width: 0; /* để text wrap đúng */
+    }
+
+    /* avatar */
+    .notif-img {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid #dee2e6;
+    }
+
+    /* text */
+    .notif-text {
+        min-width: 0; /* cho small wrap */
+    }
+
+        .notif-text strong {
+            display: block;
+            font-size: 15px;
+        }
+
+        .notif-text small {
+            display: block;
+            font-size: 13px;
+            color: #6c757d;
+            line-height: 1.25;
+        }
+
+    /* ===== Dot sửa lại: đặt ở mép phải, canh giữa theo chiều cao của button ===== */
+    .notif-dot {
+        width: 10px;
+        height: 10px;
+        background-color: #0d6efd;
+        border-radius: 50%;
+        flex: 0 0 auto; /* không giãn */
+        margin-left: 12px;
+        margin-top: 6px;
+        align-self: center; /* canh giữa theo chiều cao button */
+        box-shadow: 0 0 0 2px #fff; /* border trắng nhẹ để không dính vào nội dung */
+    }
+
+    /* Nếu dot dùng class ms-auto trong HTML, đảm bảo nó không bị ảnh hưởng:
+       (nếu bạn không dùng ms-auto, dot sẽ vẫn hiển thị vì nằm sau .notif-info) */
+    .notif-btn .ms-auto.notif-dot {
+        margin-left: 12px;
+    }
+
+    /* list-group item remove default padding/border line if needed */
+    .list-group-item.p-0 {
+        border: none;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    /* cosmetic: thin scrollbar (optional) */
+    .modal.modal-right .modal-body::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .modal.modal-right .modal-body::-webkit-scrollbar-thumb {
+        background: rgba(0,0,0,0.12);
+        border-radius: 999px;
+    }
+
+</style>

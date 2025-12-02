@@ -1,0 +1,93 @@
+﻿@model ProjectTest1.ViewModels.UserViewModel
+
+<div class="modal fade" id="userDetailModal" tabindex="-1" aria-labelledby="userDetailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title" id="userDetailLabel">
+                    <i class="bi bi-person-vcard text-primary me-2"></i>Chi tiết người dùng
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+
+            <div class="modal-body">
+                @if (Model != null)
+                {
+                    <div class="row">
+                        <!-- Ảnh đại diện -->
+                        <div class="col-md-3 text-center mb-4">
+                            <img src="@(Model.AvatarUrl ?? "/images/default-avatar.png")"
+                                 alt="Avatar"
+                                 class="rounded-circle shadow-sm mb-3"
+                                 width="120" height="120"
+                                 style="object-fit: cover; border: 3px solid #f0f0f0;">
+                            <h5 class="fw-bold">@Model.FullName</h5>
+                            <p class="text-muted mb-1">@Model.Email</p>
+                            <span class="badge @(Model.IsActive ? "bg-success" : "bg-danger")">
+                                @(Model.IsActive ? "Đang hoạt động" : "Vô hiệu")
+                            </span>
+                        </div>
+
+                        <!-- Thông tin chi tiết -->
+                        <div class="col-md-9">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold text-muted">Họ và tên</label>
+                                    <div>@Model.FullName</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold text-muted">Email</label>
+                                    <div>@Model.Email</div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold text-muted">Số điện thoại</label>
+                                    <div>@(string.IsNullOrEmpty(Model.Phone) ? "-" : Model.Phone)</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold text-muted">Địa chỉ</label>
+                                    <div>@(string.IsNullOrEmpty(Model.Address) ? "-" : Model.Address)</div>
+                                </div>
+                            </div>
+
+                          
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold text-muted">Vai trò</label>
+                                    <div>
+                                        @if (Model.Role == "Admin")
+                                        {
+                                            <span class="badge bg-primary">Admin</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">User</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold text-muted">Ngày tạo</label>
+                                    <div>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center text-muted p-4">
+                        <i class="bi bi-info-circle display-6 d-block mb-2"></i>
+                        Không có dữ liệu người dùng.
+                    </div>
+                }
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>

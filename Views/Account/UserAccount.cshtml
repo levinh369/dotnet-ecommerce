@@ -1,0 +1,440 @@
+﻿@model ProjectTest1.ViewModels.UserViewModel
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cập nhật hồ sơ — cs.html</title>
+    <style>
+        :root {
+            --bg: #f4f6fb;
+            --card: #ffffff;
+            --muted: #6b7280;
+            --accent: #2563eb
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+            background: var(--bg);
+            color: #111;
+            margin: 0;
+            padding: 32px
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 6px 18px rgba(15,23,42,0.06)
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 20px
+        }
+
+        p.lead {
+            margin: 0 0 20px;
+            color: var(--muted)
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #111;
+            font-weight: 600
+        }
+
+        input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e6e9ef;
+            border-radius: 8px;
+            font-size: 14px
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 14px
+        }
+
+        button {
+            background: var(--accent);
+            color: #fff;
+            padding: 10px 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600
+        }
+
+            button.secondary {
+                background: #e6eefc;
+                color: var(--accent);
+                border: 1px solid rgba(37,99,235,0.12)
+            }
+
+        .muted {
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        .profile-card {
+            background: linear-gradient(180deg,#fbfdff,#f7fbff);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #eef6ff
+        }
+
+        .avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid #e6eefc
+        }
+
+            .avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover
+            }
+
+        .avatar-placeholder {
+            font-size: 40px;
+            color: #9aa4b2
+        }
+
+        .small {
+            font-size: 13px;
+            color: var(--muted)
+        }
+
+        .file-input {
+            display: none
+        }
+
+        .upload-btn {
+            background: #fff;
+            border: 1px dashed #d1e3ff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer
+        }
+
+        .note {
+            font-size: 12px;
+            color: #475569
+        }
+
+        .profile-card {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .avatar {
+            width: 84px;
+            height: 84px
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Cập nhật hồ sơ</h1>
+            <p class="lead">Thay đổi thông tin cá nhân và ảnh đại diện của bạn.</p>
+
+            <form id="profileForm" enctype="multipart/form-data">
+                <div class="grid">
+                    <!-- Cột trái -->
+                    <div>
+                        <input type="hidden" name="UserId" id="UserId" value="@Model.UserId" />
+
+                        <div style="margin-bottom:14px">
+                            <label for="fullname">Họ và tên</label>
+                            <input id="fullname" name="FullName" type="text" placeholder="Nguyễn Văn A" required value="@Model.FullName" />
+                        </div>
+
+                        <div style="margin-bottom:14px">
+                            <label for="email">Email</label>
+                            <input id="email" name="Email" type="email" placeholder="name@example.com" required value="@Model.Email" />
+                        </div>
+
+                        <div style="margin-bottom:14px">
+                            <label for="phone">Số điện thoại</label>
+                            <input id="phone" name="Phone" type="text" placeholder="0123456789" required value="@Model.Phone" />
+                        </div>
+
+                        <!-- Hidden lưu tên tỉnh/huyện/xã -->
+                        <input type="hidden" name="Province" id="Province" />
+                        <input type="hidden" name="District" id="District" />
+                        <input type="hidden" name="Ward" id="Ward" />
+
+                        <!-- Chọn địa chỉ -->
+                        <div style="margin-bottom:14px">
+                            <label>Địa chỉ</label> 
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+                                <select id="shippingProvince" name="ProvinceId" data-selected="@Model.ProvinceId" required>
+                                    <option disabled selected value="">Chọn Tỉnh/Thành phố</option>
+                                </select>
+                                <select id="shippingDistrict" name="DistrictId" data-selected="@Model.DistrictId" required>
+                                    <option disabled selected value="">Chọn Quận/Huyện</option>
+                                </select>
+                                <select id="shippingWard" name="WardId" data-selected="@Model.WardId" required>
+                                    <option disabled selected value="">Chọn Phường/Xã</option>
+                                </select>
+
+                            </div>
+
+                        </div>
+                        <div style="margin-bottom:14px">
+                            <input id="address" name="AddressDetail" type="text" placeholder="123 Đường ABC, Quận X, TP. Y" value="@Model.Address" />
+                        </div>
+
+                        <div style="margin-bottom:8px">
+                            <label>Ảnh đại diện</label>
+                            <div class="muted">Chọn ảnh bên phải để xem trước. Bạn có thể giữ nguyên nếu không muốn thay đổi.</div>
+                        </div>
+
+                        <div class="actions">
+                            <button type="submit">Lưu thay đổi</button>
+                            <div style="margin-left:auto" class="note" id="status">—</div>
+                        </div>
+                    </div>
+
+                    <!-- Cột phải -->
+                    <aside>
+                        <div class="profile-card">
+                            <div class="avatar" id="avatarPreview">
+                                <div class="avatar-placeholder"
+                                     id="avatarPlaceholder"
+                                     style="@(string.IsNullOrEmpty(Model.AvatarUrl) ? "" : "display:none")">
+                                    👤
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+                                {
+                                    <img src="@Model.AvatarUrl" alt="Avatar" />
+                                }
+                            </div>
+
+
+                            <div style="text-align:center">
+                                <div style="font-weight:700" id="previewName">@Model.FullName</div>
+                                <div class="small" id="previewEmail">@Model.Email</div>
+
+                                <div style="margin-top:10px;display:flex;gap:8px;justify-content:center">
+                                    <label class="upload-btn" for="avatarInput">Chọn ảnh</label>
+                                    <input id="avatarInput" name="MainImageFile" class="file-input" type="file" accept="image/*" />
+                                </div>
+
+                                <div class="note" style="margin-top:8px">Kích thước tối đa 5MB. Định dạng: JPG, PNG.</div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="globalLoading" class="text-center mb-3" style="display: none; position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+        <div class="spinner-border text-primary" role="status"></div>
+        <div><span>Đang tải dữ liệu...</span></div>
+    </div>
+</body>
+</html>
+<script>
+    let provinces = [];
+    let districts = [];
+    let wards = []; 
+
+    function loadProvinces() {
+        fetch('/Custom/province-api.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Không thể tải dữ liệu tỉnh thành');
+                }
+                return response.json();
+            })
+            .then(data => {
+                provinces = data;
+                const provinceSelect = document.getElementById('shippingProvince');
+                const selectedProvince = provinceSelect.dataset.selected;
+
+                provinceSelect.innerHTML = '<option value="">Chọn Tỉnh/Thành phố</option>';
+                data.forEach(province => {
+                    const option = document.createElement('option');
+                    option.value = province.code;
+                    option.textContent = province.name;
+                    if (province.code == selectedProvince) option.selected = true;
+                    provinceSelect.appendChild(option);
+                });
+
+                // Làm mới nice-select nếu có
+                if (typeof $ !== 'undefined' && $.fn.niceSelect) {
+                    $(provinceSelect).niceSelect('destroy');
+                    $(provinceSelect).niceSelect();
+                }
+
+                // Nếu đã có tỉnh cũ thì load huyện tương ứng
+                if (selectedProvince) {
+                    loadDistricts(selectedProvince);
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi khi tải dữ liệu tỉnh/thành phố:', error);
+                alert('Không thể tải dữ liệu địa chỉ');
+            });
+    }
+
+    function loadDistricts(provinceCode) {
+        const province = provinces.find(p => p.code == provinceCode);
+        if (!province) return;
+
+        districts = province.districts;
+        const districtSelect = document.getElementById('shippingDistrict');
+        const selectedDistrict = districtSelect.dataset.selected;
+
+        districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+        districts.forEach(district => {
+            const option = document.createElement('option');
+            option.value = district.code;
+            option.textContent = district.name;
+            if (district.code == selectedDistrict) option.selected = true;
+            districtSelect.appendChild(option);
+        });
+
+        // Reset xã
+        const wardSelect = document.getElementById('shippingWard');
+        wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+
+        if (typeof $ !== 'undefined' && $.fn.niceSelect) {
+            $(districtSelect).niceSelect('destroy');
+            $(districtSelect).niceSelect();
+            $('#shippingWard').niceSelect('destroy');
+            $('#shippingWard').niceSelect();
+        }
+
+        // Nếu có huyện cũ thì load xã tương ứng
+        if (selectedDistrict) {
+            loadWards(selectedDistrict);
+        }
+    }
+
+    function loadWards(districtCode) {
+        const district = districts.find(d => d.code == districtCode);
+        if (!district) return;
+
+        wards = district.wards;
+        const wardSelect = document.getElementById('shippingWard');
+        const selectedWard = wardSelect.dataset.selected;
+
+        wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+        wards.forEach(ward => {
+            const option = document.createElement('option');
+            option.value = ward.code;
+            option.textContent = ward.name;
+            if (ward.code == selectedWard) option.selected = true;
+            wardSelect.appendChild(option);
+        });
+
+        if (typeof $ !== 'undefined' && $.fn.niceSelect) {
+            $(wardSelect).niceSelect('destroy');
+            $(wardSelect).niceSelect();
+        }
+    }
+
+    // Gắn sự kiện khi trang load
+    document.addEventListener("DOMContentLoaded", function () {
+        loadProvinces();
+
+        // Khi chọn Tỉnh
+        document.getElementById('shippingProvince').addEventListener("change", function () {
+            loadDistricts(this.value);
+
+            // Gán tên tỉnh vào input hidden
+            let selectedText = this.options[this.selectedIndex]?.text || "";
+            document.getElementById("Province").value = selectedText;
+        });
+
+        // Khi chọn Huyện
+        document.getElementById('shippingDistrict').addEventListener("change", function () {
+            loadWards(this.value);
+
+            // Gán tên huyện vào input hidden
+            let selectedText = this.options[this.selectedIndex]?.text || "";
+            document.getElementById("District").value = selectedText;
+        });
+
+        // Khi chọn Xã
+        document.getElementById('shippingWard').addEventListener("change", function () {
+            // Gán tên xã vào input hidden
+            let selectedText = this.options[this.selectedIndex]?.text || "";
+            document.getElementById("Ward").value = selectedText;
+        });
+    });
+
+            document.getElementById("avatarInput").addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById("avatarPreview");
+        const placeholder = document.getElementById("avatarPlaceholder");
+
+        if (!file) return;
+
+        // Kiểm tra dung lượng tối đa 5MB
+        if (file.size > 5 * 1024 * 1024) {
+            alert("❌ Kích thước ảnh tối đa là 5MB!");
+            event.target.value = "";
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            // Nếu có placeholder thì ẩn nó
+            if (placeholder) placeholder.style.display = "none";
+
+            // Hiển thị ảnh preview
+            preview.innerHTML = `<img src="${e.target.result}" alt="Avatar Preview" />`;
+        };
+        reader.readAsDataURL(file);
+    });
+
+
+</script>
+@section Scripts {
+    <script src="~/js/Account.js"></script>
+}

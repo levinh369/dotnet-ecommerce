@@ -1,0 +1,72 @@
+﻿@model ProjectTest1.ViewModels.VoucherViewModel
+@using ProjectTest1.Enums
+
+<div class="modal fade" id="voucherUserDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 shadow-sm border-0">
+
+            <!-- Header -->
+            <div class="modal-header bg-primary text-white rounded-top-4">
+                <h5 class="modal-title fw-bold">@Model.Name</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body p-4">
+                <div class="row g-3">
+
+                    <!-- Left Column: cơ bản -->
+                    <div class="col-md-6">
+                        <p class="mb-2"><strong>Mã voucher:</strong> <span class="text-primary">@Model.Code</span></p>
+                        @if (!string.IsNullOrEmpty(Model.Description))
+                        {
+                            <p class="mb-2"><strong>Mô tả:</strong> @Model.Description</p>
+                        }
+
+                        <p class="mb-2">
+                            <strong>Kiểu giảm:</strong>
+                            @(Model.DiscountType == DiscountType.Fixed ?
+                                                        $"{Model.DiscountValue:N0}₫" :
+                                                        $"{Model.DiscountValue}%")
+                        </p>
+
+                        @if (Model.MinOrderValue > 0)
+                        {
+                            <p class="mb-2"><strong>Đơn tối thiểu:</strong> @($"{Model.MinOrderValue:N0}₫")</p>
+                        }
+
+                        @if (Model.Type == VoucherType.Loyalty)
+                        {
+                            <p class="mb-2"><strong>⭐ Điểm cần đổi:</strong> @Model.PointCost</p>
+                        }
+                    </div>
+
+                    <!-- Right Column: hạn mức & hiệu lực -->
+                    <div class="col-md-6">
+                        <p class="mb-2"><strong>📦 Còn lại:</strong> @(Model.UsageLimit - Model.UsedCount)</p>
+                        <p class="mb-2">
+                            <strong>⏰ Hiệu lực:</strong>
+                            @(Model.StartDate?.ToString("dd/MM/yyyy") ?? "—") - @(Model.EndDate?.ToString("dd/MM/yyyy") ?? "—")
+                        </p>
+                        <p class="mb-2"><strong>🔖 Giới hạn mỗi người:</strong> @Model.MaxPerUser</p>
+                        <p class="mb-2">
+                            <strong>💳 Trạng thái:</strong>
+                            <span class="badge @(Model.Status == VoucherStatus.Active ? "bg-success" : "bg-secondary")">
+                                @Model.Status
+                            </span>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-secondary rounded-pill px-4 py-2 fw-semibold" data-bs-dismiss="modal">
+                    ✖ Đóng
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

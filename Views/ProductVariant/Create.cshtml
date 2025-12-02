@@ -1,0 +1,72 @@
+﻿@{
+    Layout = null;   // ❗ Rất quan trọng
+}
+<div class="modal fade clean-modal" id="addVariantModal" tabindex="-1" aria-labelledby="addModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content clean-modal-content">
+            <div class="modal-header clean-modal-header">
+                <h5 class="modal-title" id="addModalTitle"><i class="fas fa-plus me-2"></i>Thêm biến thể mới</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="addVariantForm" novalidate enctype="multipart/form-data">
+                    <input type="hidden" name="productId" value="@Model.ProductId " />
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label clean-label">Màu <span class="text-danger">*</span></label>
+                            <div class="input-group clean-input-group">
+                                <span class="input-group-text clean-icon"><i class="fas fa-palette"></i></span>
+                                <select class="form-select clean-select" id="addColor" name="ColorId" required>
+                                    <option value="">Chọn màu</option>
+                                    @foreach (var color in Model.Colors)
+                                    {
+                                        <option value="@color.ColorId">
+                                            @color.ColorName
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="invalid-feedback">Vui lòng chọn màu!</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label clean-label">Size <span class="text-danger">*</span></label>
+                            <div class="input-group clean-input-group">
+                                <span class="input-group-text clean-icon"><i class="fas fa-ruler-combined"></i></span>
+                                <select class="form-select clean-select" id="addSize" name="SizeId" required>
+                                    <option value="">Chọn size</option>
+                                    @foreach (var size in Model.Sizes)
+                                    {
+                                        <option value="@size.SizeId">@size.SizeName</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="invalid-feedback">Vui lòng chọn size!</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label clean-label">Giá (VND) <span class="text-danger">*</span></label>
+                            <div class="input-group clean-input-group">
+                                <span class="input-group-text clean-icon"><i class="fas fa-tag"></i></span>
+                                <input type="number" name="Price" class="form-control clean-input" id="addPrice" min="0" required placeholder="Nhập giá" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label clean-label">Tồn kho <span class="text-danger">*</span></label>
+                            <div class="input-group clean-input-group">
+                                <span class="input-group-text clean-icon"><i class="fas fa-box"></i></span>
+                                <input type="number" name="StockQuantity" class="form-control clean-input" id="addStock" min="0" required placeholder="Nhập số lượng" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer clean-modal-footer">
+                <button type="button" class="btn clean-btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>Hủy</button>
+                <button type="button" class="btn clean-btn-primary" id="addSaveBtn" onclick="productVariant.create()"><i class="fas fa-plus me-1"></i>Thêm mới</button>
+            </div>
+        </div>
+    </div>
+</div>
+
