@@ -54,7 +54,8 @@ ProjectTest1/
 ## Các bước cài đặt
 1. **Clone repository:**
 ```text
-git clone https://github.com/vinh369/dotnet-ecommerce.git
+git clone https://github.com/levinh369/dotnet-ecommerce.git
+cd dotnet-ecommerce
 ```
 2. **Khôi phục các packages:**
 ```text
